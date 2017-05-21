@@ -21,7 +21,7 @@ app.use('/assets', express.static('../client/assets'));
 app.use('/node_modules', express.static('../node_modules'));
 app.use('/server', express.static('../server'));
 
-app.get('/', function(req, res) {
+app.get('/*', function(req, res) {
 	res.sendFile('index.html', {root: '../client/'});
 });
 

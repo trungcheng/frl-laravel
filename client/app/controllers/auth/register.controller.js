@@ -10,17 +10,14 @@
     	$scope.Credential = {};
 
 		$scope.Credential = {
-			first:null,
-			last:null,
+			name:null,
 			email: null,
 			password:null,
-			address:null,
-			phone:null
 		}
 	    // $scope.isLoading = false;
 	    $scope.userData = {token:''};
 
-	    $scope.phoneNumbr = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,5}$/im;
+	    // $scope.phoneNumbr = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,5}$/im;
 
 		$scope.submited = false;
 
@@ -28,7 +25,7 @@
 
 		$scope.emailStatus = false;
 		
-		$scope.phoneStatus = false;
+		// $scope.phoneStatus = false;
 
 		$scope.register = function() {
 			$scope.submited = true;
@@ -38,12 +35,9 @@
 					$state.go('access.login');
 				} else {
 					$scope.Credential = {
-						first:null,
-						last:null,
+						name:null,
 						email: null,
-						password:null,
-						address:null,
-						phone:null
+						password:null
 					}
 					ToastFactory.popErrors(response.message);
 				}

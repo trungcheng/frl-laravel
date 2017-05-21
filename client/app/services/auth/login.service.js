@@ -10,6 +10,10 @@
     	this.postLogin = function(Credential) {
             return $http.post(Server.API_LARAVEL + '/api/v1/authenticate', Credential);
         }
+
+        this.getLoginUser = function (data) {
+            return $http.post(Server.API_LARAVEL + '/api/v1/getUser', data);
+        }
     	
     }
 

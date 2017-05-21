@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-ng-app="Freelance">
 <head>
+	<base href="/">
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta content="width=device-width, initial-scale=1" name="viewport" />
@@ -20,13 +21,13 @@
 
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="#/app/dashboard">Freelance</a>
+			<a class="navbar-brand" href="/app/dashboard">Freelance</a>
 			<ul class="nav navbar-nav">
-				<li ng-class="{ active: isActive('/app/dashboard') }"><a href="#/app/dashboard">Dashboard</a></li>
-				<li ng-class="{ active: isActive('/app/chat') }"><a href="#/app/chat">Chat</a></li>
+				<li ng-class="{ active: isActive('/app/dashboard') }"><a href="/app/dashboard">Dashboard</a></li>
+				<li ng-class="{ active: isActive('/app/chat') }"><a href="/app/chat">Chat</a></li>
 			</ul>
 			<ul class="nav navbar-nav pull-right" ng-if="!rootAuth">
-				<li><a href="#/access/login">Login</a></li>
+				<li><a href="/access/login">Login</a></li>
 			</ul>
 			<ul class="nav navbar-nav pull-right" ng-if="rootAuth">
 				<li ng-cloak><a>{{rootAuth.email}}</a></li>
@@ -35,9 +36,11 @@
 		</div>
 	</nav><br><br>
 
-	<div ui-view=""></div>
+	<div class="container">
+		<div ui-view=""></div>
+	</div>
 
-	<toaster-container toaster-options="{'position-class': 'toast-bottom-right','close-button': true}"></toaster-container>
+	<toaster-container toaster-options="{'position-class': 'toast-top-right','close-button': true}"></toaster-container>
 
 	<!-- BEGIN JQUERY CORE -->
 	<script src="/components/jquery/dist/jquery.min.js"></script>

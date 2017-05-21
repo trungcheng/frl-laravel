@@ -21,27 +21,21 @@
 		}
 
 		$scope.login = function() {
-			LoginService.postLogin($scope.Credential).success(function(response){
+			LoginService.postLogin($scope.userLogin).success(function(response){
 				if(response.status) {
-					$cookieStore.put('member',response.data.member);
-					$cookieStore.put('token',response.data.token);
-					// $cookieStore.put('time_out',response.data.token);
-					ToastFactory.popSuccess(response.message);
-					$state.go('app.dashboard');
+					LoginService.getLoginUser({token: response.token}).success(function (res) {
+						if (res.status) {
+							$cookieStore.put('member',res.member);
+							$cookieStore.put('token',res.token);
+							// $cookieStore.put('time_out',response.data.token);
+							ToastFactory.popSuccess(response.message);
+							$state.go('app.dashboard');	
+						} else {
+							ToastFactory.popErrors(response.message);
+						}
+					});
 				} else {
-					if(response.message == 'Your email wrong !'){
-						$scope.Credential = {
-							email:null,
-							password:$scope.Credential.password
-						}
-						ToastFactory.popErrors(response.message);
-					} else {
-						$scope.Credential = {
-							email:$scope.Credential.email,
-							password:null
-						}
-						ToastFactory.popErrors(response.message);
-					}
+					ToastFactory.popErrors(response.message);
 				}
 			})
 		}

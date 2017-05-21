@@ -14,6 +14,27 @@ Freelance.factory('socket',function () {
     return socket;
 });
 
+/* Init global settings add timeout when user logged */
+Freelance.run(function($rootScope, $state,$interval,config, $location, $http, $cookieStore) {
+    if(config.enableClientAuthExpire) {
+        $interval(function(){
+            if($rootScope.rootAuth != null) {
+                if($cookieStore.get('time_out') != null) {
+                    $cookieStore.put('time_out',config.timeDelayCheckAuthExpire + $cookieStore.get('time_out'));
+                } else {
+                    $cookieStore.put('time_out',config.timeDelayCheckAuthExpire);
+                }
+            }
+            if($cookieStore.get('time_out') != null && $cookieStore.get('time_out') >= config.timeExpireAuth){
+                $cookieStore.remove('member');
+                $cookieStore.remove('token');
+                $cookieStore.remove('time_out');
+                $location.path('access/login');
+            }
+        },config.timeDelayCheckAuthExpire);
+    }
+});
+
 Freelance.run(function($rootScope, $state,$interval, $location, $http, $cookieStore) {
     $rootScope.$state = $state;
     $rootScope.rootAuth = null;
@@ -46,7 +67,20 @@ Freelance.run(function($rootScope, $state,$interval, $location, $http, $cookieSt
         $cookieStore.remove('token');
         $location.path('access/login');
     }
+
+    $rootScope.isActive = function (viewLocation) {
+        var active = (viewLocation === $location.path());
+        return active;
+    };
 });
+
+Freelance.run(['$state', '$stateParams', function($state, $stateParams) {
+    //this solves page refresh and getting back to state
+}]);
+
+Freelance.config(["$locationProvider", function($locationProvider) {
+    $locationProvider.html5Mode(true);
+}]);
 
 Freelance.config(function($httpProvider) {
 
@@ -56,7 +90,7 @@ Freelance.config(function($httpProvider) {
                 config.headers = config.headers || {};
                 if ($cookieStore.get('token') != null) {
                     config.headers['x-access-token'] = $cookieStore.get('token');
-                    $cookieStore.remove('time_out');
+                    // $cookieStore.remove('time_out');
                 }
                 return config;
             },
@@ -64,7 +98,7 @@ Freelance.config(function($httpProvider) {
                 if (response.status === 401) {
                     $cookieStore.remove('token');
                     $cookieStore.remove('member');
-                    $cookieStore.remove('time_out');
+                    // $cookieStore.remove('time_out');
                     $location.path('access/login');
                 }
                 return $q.reject(response);
