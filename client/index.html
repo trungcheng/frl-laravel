@@ -1,9 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-ng-app="Freelance">
 <head>
-	<title>Demo</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1" name="viewport"/>
+	<meta content="" name="description"/>
+	<meta content="" name="author"/>
+	
+	<title>Frl Laravel</title>
+	
+	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/components/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/assets/css/flags.css">
+	<link rel="stylesheet" href="/assets/css/app.css">
+	<link rel="stylesheet" href="/assets/css/toaster.css">
 </head>
 <body>
 	<h1>Hello World</h1>
+
+	<div ui-view=""></div>
+
+	<toaster-container toaster-options="{'position-class': 'toast-bottom-right','close-button': true}"></toaster-container>
+
+	<!-- BEGIN JQUERY CORE -->
+	<script src="/components/jquery/dist/jquery.min.js"></script>
+	<!-- END JQUERY CORE -->
+	
+	<!-- BEGIN CORE ANGULAR SCRIPTS -->
+	<script src="/assets/plugins/angular/angular.min.js"></script>
+    <script src="/assets/plugins/angular/angular-sanitize.min.js"></script>
+    <script src="/assets/plugins/angular/angular-touch.min.js"></script>
+    <script src="/assets/plugins/angular/angular-ui-router.min.js"></script>
+    <script src="/assets/plugins/angular/angular-cookies.min.js"></script>
+    <script src="/assets/plugins/angular/angular-local-storage.min.js"></script>
+	<!-- END CORE ANGULAR SCRIPTS -->
+
+	<!-- BEGIN BOOTSTRAP CORE -->
+	<script src="/components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/assets/plugins/bootstrap/ui-bootstrap-tpls.min.js"></script>
+	<!-- END BOOTSTRAP CORE -->
+
+	<!-- BEGIN CUSTOMER JS -->
+    <script src="/assets/js/toaster.js"></script>
+    <script src="/assets/plugins/angular/angular-translate.min.js"></script>
+    <script src="/assets/plugins/angular/angular-translate-loader-url.min.js"></script>
+    <script src="/assets/plugins/angular/angular-translate-loader-partial.min.js"></script>
+    <script src="/assets/plugins/angular/angular-translate-storage-cookie.min.js"></script> 
+    <!-- END CUSTOMER JS -->
+
+	<!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->
+    <script src="/client/app/app.js"></script>
+    <script src="/client/app/routes.js"></script>
+    <script src="/client/app/directives.js"></script>
+    <script src="/client/app/filters.js"></script>
+    <script src="/client/app/config/app.js"></script>
+    <!-- END APP LEVEL ANGULARJS SCRIPTS -->
+
+    <!-- BEGIN CONTROLLERS -->
+
+    <!-- END CONTROLLERS -->
+
+	<!-- BEGIN SEVERVICE JS -->
+
+    <!-- END SEVERVICE JS -->
+
+    <!-- BEGIN DIRECTIVES JS -->
+
+    <!-- END DIRECTIVES JS -->
+
+    <!-- BEGIN FILTER JS -->
+
+    <!-- END FILTER JS -->
+
+	<!--NodeJs Socket.io Client-->
+    <script src="/node_modules/socket.io-client/dist/socket.io.js"></script>
+    <!--End NodeJs Socket.io Client-->
+
 </body>
 </html>
