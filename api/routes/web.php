@@ -14,3 +14,10 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
+{
+    Route::post('signup', 'AuthenticateController@signup');
+    Route::post('authenticate', 'AuthenticateController@authenticate');
+	Route::resource('message', 'MessageController', ['only' => ['index', 'store']]);
+});

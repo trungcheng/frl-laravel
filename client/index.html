@@ -2,22 +2,38 @@
 <html lang="en" data-ng-app="Freelance">
 <head>
 	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta content="width=device-width, initial-scale=1" name="viewport"/>
-	<meta content="" name="description"/>
-	<meta content="" name="author"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
 	
-	<title>Frl Laravel</title>
+	<title ng-cloak ng-bind="'Frl Laravel | ' + $state.current.data.pageTitle"></title>
 	
-	<link rel="shortcut icon" href="favicon.ico" />
-	<link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/components/font-awesome/css/font-awesome.min.css">
-	<link rel="stylesheet" href="/assets/css/flags.css">
-	<link rel="stylesheet" href="/assets/css/app.css">
-	<link rel="stylesheet" href="/assets/css/toaster.css">
+	<link rel="shortcut icon" href="/client/favicon.ico" />
+	<link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/components/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="/assets/css/flags.css" />
+	<link rel="stylesheet" href="/assets/css/app.css" />
+	<link rel="stylesheet" href="/assets/css/toaster.css" />
 </head>
 <body>
-	<h1>Hello World</h1>
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#/app/dashboard">Freelance</a>
+			<ul class="nav navbar-nav">
+				<li ng-class="{ active: isActive('/app/dashboard') }"><a href="#/app/dashboard">Dashboard</a></li>
+				<li ng-class="{ active: isActive('/app/chat') }"><a href="#/app/chat">Chat</a></li>
+			</ul>
+			<ul class="nav navbar-nav pull-right" ng-if="!rootAuth">
+				<li><a href="#/access/login">Login</a></li>
+			</ul>
+			<ul class="nav navbar-nav pull-right" ng-if="rootAuth">
+				<li ng-cloak><a>{{rootAuth.email}}</a></li>
+				<li><a href="javascript:void(0)" ng-click="logout()">Logout</a></li>
+			</ul>
+		</div>
+	</nav><br><br>
 
 	<div ui-view=""></div>
 
@@ -55,15 +71,22 @@
     <script src="/client/app/directives.js"></script>
     <script src="/client/app/filters.js"></script>
     <script src="/client/app/config/app.js"></script>
+    <script src="/client/app/config/constants.js"></script>
     <!-- END APP LEVEL ANGULARJS SCRIPTS -->
 
     <!-- BEGIN CONTROLLERS -->
-
+    <script src="/client/app/controllers/auth/login.controller.js"></script>
+    <script src="/client/app/controllers/auth/register.controller.js"></script>
     <!-- END CONTROLLERS -->
 
-	<!-- BEGIN SEVERVICE JS -->
+    <!-- BEGIN FACTORIES JS -->
+	<script src="/client/app/factories/toast.factory.js"></script>
+    <!-- END FACTORIES JS -->
 
-    <!-- END SEVERVICE JS -->
+	<!-- BEGIN SERVICE JS -->
+	<script src="/client/app/services/auth/login.service.js"></script>
+	<script src="/client/app/services/auth/register.service.js"></script>
+    <!-- END SERVICE JS -->
 
     <!-- BEGIN DIRECTIVES JS -->
 
