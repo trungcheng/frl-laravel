@@ -23,7 +23,7 @@
     "express": "^4.14.0",
     "fs-extra": "^0.30.0",
     "underscore": "^1.8.3",
-    "socket.io": "^1.4.5"
+    "socket.io": "~0.9.16"
   },
   "devDependencies": {
     "browser-sync": "^2.11.1",

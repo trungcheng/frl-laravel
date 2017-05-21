@@ -5,7 +5,13 @@ var uuid = require('node-uuid');
 var Room = require('./room.js');
 var _ = require('underscore')._;
 
-module.exports.purge = function(s, action) {
+// io.set("log level", 1);
+var people = {};
+var rooms = {};
+var sockets = [];
+var chatHistory = {};
+
+function purge(s, action, chat) {
 
 	if (people[s.id].inroom) { //user is in a room
 		var room = rooms[people[s.id].inroom]; //check which room user is in.
@@ -29,8 +35,8 @@ module.exports.purge = function(s, action) {
 				delete rooms[people[s.id].owns]; //delete the room
 				delete people[s.id]; //delete user from people collection
 				delete chatHistory[room.name]; //delete the chat history
-				sizePeople = _.size(people);
-				sizeRooms = _.size(rooms);
+				var sizePeople = _.size(people);
+				var sizeRooms = _.size(rooms);
 				chat.emit("update-people", {people: people, count: sizePeople});
 				chat.emit("roomList", {rooms: rooms, count: sizeRooms});
 				var o = _.findWhere(sockets, {'id': s.id});
@@ -88,7 +94,7 @@ module.exports.purge = function(s, action) {
 					s.leave(room.name);
 				}
 				delete people[s.id];
-				sizePeople = _.size(people);
+				var sizePeople = _.size(people);
 				chat.emit("update-people", {people: people, count: sizePeople});
 				var o = _.findWhere(sockets, {'id': s.id});
 				sockets = _.without(sockets, o);
@@ -109,7 +115,7 @@ module.exports.purge = function(s, action) {
 		if (action === "disconnect") {
 			chat.emit("update", people[s.id].name + " has disconnected from the server.");
 			delete people[s.id];
-			sizePeople = _.size(people);
+			var sizePeople = _.size(people);
 			chat.emit("update-people", {people: people, count: sizePeople});
 			var o = _.findWhere(sockets, {'id': s.id});
 			sockets = _.without(sockets, o);
@@ -121,7 +127,8 @@ module.exports.respond = function(socket, chat) {
 
 	socket.on("joinserver", function(name, device) {
 		var exists = false;
-		var ownerRoomID = inRoomID = null;
+		var ownerRoomID = null;
+		var inRoomID = null;
 
 		_.find(people, function(key,value) {
 			if (key.name.toLowerCase() === name.toLowerCase())
@@ -131,7 +138,7 @@ module.exports.respond = function(socket, chat) {
 		if (exists) {//provide unique username:
 			var randomNumber=Math.floor(Math.random()*1001)
 			do {
-				proposedName = name+randomNumber;
+				var proposedName = name+randomNumber;
 				_.find(people, function(key,value) {
 					if (key.name.toLowerCase() === proposedName.toLowerCase())
 						return exists = true;
@@ -142,8 +149,8 @@ module.exports.respond = function(socket, chat) {
 			people[socket.id] = {"name" : name, "owns" : ownerRoomID, "inroom": inRoomID, "device": device};
 			socket.emit("update", "You have connected to the server.");
 			chat.emit("update", people[socket.id].name + " is online.")
-			sizePeople = _.size(people);
-			sizeRooms = _.size(rooms);
+			var sizePeople = _.size(people);
+			var sizeRooms = _.size(rooms);
 			chat.emit("update-people", {people: people, count: sizePeople});
 			socket.emit("roomList", {rooms: rooms, count: sizeRooms});
 			socket.emit("joined"); //extra emit for GeoLocation
@@ -213,7 +220,7 @@ module.exports.respond = function(socket, chat) {
 
 	socket.on("disconnect", function() {
 		if (typeof people[socket.id] !== "undefined") { //this handles the refresh of the name screen
-			purge(socket, "disconnect");
+			purge(socket, "disconnect", chat);
 		}
 	});
 
@@ -225,7 +232,7 @@ module.exports.respond = function(socket, chat) {
 			var id = uuid.v4();
 			var room = new Room(name, id, socket.id);
 			rooms[id] = room;
-			sizeRooms = _.size(rooms);
+			var sizeRooms = _.size(rooms);
 			chat.emit("roomList", {rooms: rooms, count: sizeRooms});
 			//add room to socket, and auto join the creator of the room
 			socket.room = name;
@@ -254,7 +261,7 @@ module.exports.respond = function(socket, chat) {
 	socket.on("removeRoom", function(id) {
 		var room = rooms[id];
 		if (socket.id === room.owner) {
-			purge(socket, "removeRoom");
+			purge(socket, "removeRoom", chat);
 		} else {
             socket.emit("update", "Only the owner can remove a room.");
 		}
@@ -295,7 +302,7 @@ module.exports.respond = function(socket, chat) {
 	socket.on("leaveRoom", function(id) {
 		var room = rooms[id];
 		if (room) {
-			purge(socket, "leaveRoom");
+			purge(socket, "leaveRoom", chat);
 		}
 	});
 }

@@ -5,7 +5,7 @@ var app = express();
 var path = require('path');
 var bodyParser = require('body-parser');
 var server = require('http').createServer(app);
-var io = require("socket.io")(server);
+var io = require("socket.io").listen(server);
 var chatSocket = require('./socket');
 
 io.on('connection', function(socket) {
