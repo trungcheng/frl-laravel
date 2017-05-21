@@ -1,37 +1,143 @@
-<div class="container">
-    <div class="row">
-        <div class="col-lg-5">
-            <div class="card card-inverse card-primary">
-                <h1>Chat Application</h1>
-                <div class="card-block card">
-                    <ul class="chat"> <!-- ng-repeat here -->
-                        <li class="right clearfix">
-                        <span class="chat-img float-right">
-                            <img src="http://placehold.it/50/FA6F57/fff&amp;text=..." alt="User Avatar" class="rounded-circle" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header"> <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>
-                                <time>7 phút trước</time></small>
-                                    <strong
-                                    class="float-right primary-font">ahihi</strong>
-                                </div>
-                                <p>ahuhu</p>
-                            </div>
-                        </li>
-                    </ul>
+<div class="portlet light" style="margin-top:10px;">
+    <div class="row app-one">
+        <div class="col-sm-3 side">
+            <div class="side-one">
+                <!-- Heading -->
+                <div class="row heading">
+                    <h4 class="title-column">USERS ONLINE</h4>
                 </div>
-                <div class="card-footer">
-                    <form ng-submit="onSubmit()" action="POST">
-                        <div class="input-group">
-                            <input id="btn-input" type="tẽt" class="form-control form-control-sm"
-                            placeholder="Type your mesage here..." required
-                            ng-model="model.mesage" name="mesage" /> <span class="input-group-btn">
-                                <button class="btn btn-warning btn-sm" id="btn-chat">Send</button>
-                            </span>
+                <!-- Heading End -->
+
+                <!-- SearchBox -->
+                <div class="row searchBox">
+                    <div class="col-sm-12 searchBox-inner">
+                        <div class="form-group has-feedback">
+                            <input id="searchText" type="text" class="form-control" name="searchText" placeholder="Search">
+                            <span class="glyphicon glyphicon-search form-control-feedback" style="line-height:32px;"></span>
                         </div>
-                    </form> 
+                    </div>
                 </div>
+                <!-- Search Box End -->
+
+                <!-- sideBar -->
+                <div class="row sideBar">
+                    <div class="row sideBar-body" ng-repeat="item in vm.onlineListUsers">
+                        <div class="col-sm-3 col-xs-3 sideBar-avatar">
+                            <div class="avatar-icon">
+                                <img ng-src="/server/{{item.avatar}}">
+                            </div>
+                        </div>
+                        <div class="col-sm-9 col-xs-9 sideBar-main">
+                            <div class="row">
+                                <div class="col-sm-8 col-xs-8 sideBar-name">
+                                    <span class="name-meta">{{ item.name.first }} {{ item.name.last }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sidebar End -->
             </div>
         </div>
+
+        <!-- New Message Sidebar End -->
+
+        <!-- Conversation Start -->
+        <div class="col-sm-6 conversation">
+            <!-- Heading -->
+            <div class="row heading">
+                <h4 class="title-column">CHAT GROUPS</h4>
+                <div class="col-sm-1 col-xs-1  heading-dot pull-right">
+                    <i class="fa fa-ellipsis-v fa-2x  pull-right" aria-hidden="true"></i>
+                </div>
+            </div>
+            <!-- Heading End -->
+
+            <!-- Message Box -->
+            <div class="row message" id="conversation">
+                <div class="row message-previous">
+                    <div class="col-sm-12 previous">
+                        <a onclick="previous(this)" id="ankitjain28" name="20">Show Previous Message!</a>
+                    </div>
+                </div>
+
+                <div class="row message-body" ng-repeat="data in vm.listMessage track by $index">
+                    <div class="col-sm-12 message-main-receiver">
+                        <div class="heading-avatar-icon" style="float:left;">
+                            <img src="/server/public/uploads/58c91bd9a266c6dc6bec874d/1490887499687-team16.jpg">
+                        </div>
+                        <div class="message-text">
+                            <p class="name">
+                                <strong style="margin-right: 7px;">trungcheng</strong>
+                                <span style="opacity:0.8" class="time-meta">18:18 PM</span></p>
+                            <div class="message-chat">
+                                {{ data }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <!-- Message Box End -->
+
+            <!-- Reply Box -->
+            <div class="row reply">
+                <form>
+                    <div class="col-sm-1 col-xs-1 reply-emojis">
+                        <i class="fa fa-smile-o fa-2x"></i>
+                    </div>
+                    <div class="col-sm-9 col-xs-9 reply-main">
+                        <textarea ng-model="vm.message" class="form-control" rows="1" id="comment"></textarea>
+                    </div>
+                    <div class="col-sm-1 col-xs-1 reply-send" style="margin-left: 9px;">
+                        <button ng-click="vm.sendMessage()" style="height: 31px;margin-top:2px;line-height: 18px;" class="btn btn-primary">Send</button>
+                    </div>
+                </form>
+            </div>
+            <!-- Reply Box End -->
+        </div>
+        <!-- Conversation End -->
+
+        <div class="col-sm-3 side">
+            <div class="side-one">
+                <!-- Heading -->
+                <div class="row heading">
+                    <h4 class="title-column">ROOMS</h4>
+                </div>
+                <!-- Heading End -->
+
+                <!-- SearchBox -->
+                <div class="row searchBox">
+                    <div class="col-sm-12 searchBox-inner">
+                        <div class="form-group has-feedback">
+                            <input id="searchText" type="text" class="form-control" name="searchText" placeholder="Search">
+                            <span class="glyphicon glyphicon-search form-control-feedback" style="line-height:32px;"></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search Box End -->
+
+                <!-- sideBar -->
+                <div class="row sideBar">
+                    <div class="row sideBar-body">
+                        <div class="col-sm-3 col-xs-3 sideBar-avatar">
+                            <div class="avatar-icon">
+                                <img src="/server/public/uploads/58c91bd9a266c6dc6bec874d/1490887499687-team16.jpg">
+                            </div>
+                        </div>
+                        <div class="col-sm-9 col-xs-9 sideBar-main">
+                            <div class="row">
+                                <div class="col-sm-8 col-xs-8 sideBar-name">
+                                    <span class="name-meta">ROOM 1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sidebar End -->
+            </div>
+        </div>
+
     </div>
+    <!-- App One End -->
 </div>

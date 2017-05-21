@@ -16,29 +16,11 @@
 	<link rel="stylesheet" href="/assets/css/flags.css" />
 	<link rel="stylesheet" href="/assets/css/app.css" />
 	<link rel="stylesheet" href="/assets/css/toaster.css" />
+	<link rel="stylesheet" href="/assets/css/chat.css" />
 </head>
 <body>
 
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-			<a class="navbar-brand" href="/app/dashboard">Freelance</a>
-			<ul class="nav navbar-nav">
-				<li ng-class="{ active: isActive('/app/dashboard') }"><a href="/app/dashboard">Dashboard</a></li>
-				<li ng-class="{ active: isActive('/app/chat') }"><a href="/app/chat">Chat</a></li>
-			</ul>
-			<ul class="nav navbar-nav pull-right" ng-if="!rootAuth">
-				<li><a href="/access/login">Login</a></li>
-			</ul>
-			<ul class="nav navbar-nav pull-right" ng-if="rootAuth">
-				<li ng-cloak><a>{{rootAuth.email}}</a></li>
-				<li><a href="javascript:void(0)" ng-click="logout()">Logout</a></li>
-			</ul>
-		</div>
-	</nav><br><br>
-
-	<div class="container">
-		<div ui-view=""></div>
-	</div>
+	<div ui-view=""></div>
 
 	<toaster-container toaster-options="{'position-class': 'toast-top-right','close-button': true}"></toaster-container>
 
@@ -80,6 +62,7 @@
     <!-- BEGIN CONTROLLERS -->
     <script src="/client/app/controllers/auth/login.controller.js"></script>
     <script src="/client/app/controllers/auth/register.controller.js"></script>
+    <script src="/client/app/controllers/chat.controller.js"></script>
     <!-- END CONTROLLERS -->
 
     <!-- BEGIN FACTORIES JS -->
