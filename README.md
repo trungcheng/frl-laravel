@@ -1,21 +1,21 @@
-### Frl Laravel (Angular 1.4 + Laravel 5.4 + SocketIO + MySQL)
+## Frl Laravel (Angular 1.4 + Laravel 5.4 + SocketIO + MySQL)
 
 An demo application prepare for freelance projects in the future.
 
-## Make sure that you have installed all the packages in below:
+### Make sure that you have installed all the packages in below:
 
-** `Node.js` (https://nodejs.org/)
-** `npm` (https://www.npmjs.com/)
-** `nodemon` (npm install -g nodemon)
-** `bower` (npm install -g bower)
+- `Node.js` (https://nodejs.org/)
+- `npm` (https://www.npmjs.com/)
+- `nodemon` (npm install -g nodemon)
+- `bower` (npm install -g bower)
 
-## Clone or Download the repository
+### Clone or Download the repository
 
 	```
 	$ git clone https://github.com/trungcheng/frl-laravel.git chat
 	$ cd chat
 	```
-## Install Dependencies
+### Install Dependencies
 
 	```
 	$ npm install
@@ -29,7 +29,7 @@ An demo application prepare for freelance projects in the future.
 	# cd to /client folder:
 	$ bower install --allow-root
 	```
-## Running 
+### Running 
 
 	```
 	# cd to root folder
