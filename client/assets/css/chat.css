@@ -167,9 +167,9 @@ Header starts
 }
 .profile_pic{
   float: left;  
-  width: 50px;
+  width: 57px;
   height: 100%;
-  margin-right: 20px;
+  margin-right: 0px;
 }
 .profile_pic img{
   width: 100%;
@@ -232,12 +232,12 @@ List of users starts
     font-weight: 400;
 }
 .userlist-user-meta img{
-  height: 100%;
-    width: 75px;
+  height: 90%;
+    width: 59px;
     border: solid 1px rgb(188, 186, 186);
     background-color: rgba(255, 255, 255, 0.1);
     float: left;
-    margin-right: 20px;
+    margin-right: -60px;
 }
 .userlist-user-meta span{
   font-size: 20px;

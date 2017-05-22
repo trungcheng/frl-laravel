@@ -20,6 +20,7 @@
 
 		/* Making Usefull function*/
 		$scope.self = {
+
 			getUserInfo: function(callback) {
 				var uid = $location.search()['id'];
 				$scope.uid = uid;
@@ -30,7 +31,7 @@
 					}
 				};
 				runajax.runajax_function(data, function(userdata) {        
-					$scope.show_userinfo = userdata;        
+					$scope.show_userinfo = userdata;
 					callback(userdata);
 				});
 			},
@@ -62,6 +63,7 @@
 					callback(userdata);
 				});
 			},
+
 			getMsg: function(msgs_userinfo,callback) {
 			  	var data = {
 					url: '/get_msgs',
@@ -120,7 +122,7 @@
 			
 			$scope.self.getMsg(send_to_userinfo, function(result) {
 			  	$scope.msgs = "";
-			  	if(result != 'null'){
+			  	if(result != 'null') {
 					$scope.msgs = result;
 			  	}
 			});
@@ -138,9 +140,9 @@
 		/*
 			Function To get 'start new chat list' 
 		*/
-		$scope.get_users_to_chats = function(){
+		$scope.get_users_to_chats = function() {
 			$scope.self.getUsersToChats(function(newUsers) {
-			  $scope.RecentUserList = newUsers;
+			  	$scope.RecentUserList = newUsers;
 			});
 		};
 
@@ -150,7 +152,7 @@
 		$scope.send_msg = function(fromModal, socketId, toid) {
 			if(fromModal == ""){
 				if($scope.send_to_userinfo != "") {
-					if($scope.send_text == ""){
+					if($scope.send_text == "") {
 						alert("Message can't be empty.");
 					} else {
 						var data = {
@@ -262,6 +264,7 @@
 			Function to show Chat List.
 	  	*/
 		socket.on('userEntrance', function(data) {
+			console.log(data);
 			$scope.userlist = data;
 	  	});
 

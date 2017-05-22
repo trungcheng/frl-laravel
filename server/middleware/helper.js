@@ -275,10 +275,10 @@ var self = {
 
 	mergeUsers: function(socketUsers, dbUsers, newUsers, callback) {
 		var tempUsers = [];
-		for(var i in socketUsers){
+		for(var i in socketUsers) {
 			var shouldAdd = false;
 			for (var j in dbUsers){
-				if(newUsers=='yes') {
+				if(newUsers == 'yes') {
 					if (dbUsers[j].id == socketUsers[i].id) {
 						shouldAdd = false;
 						dbUsers.splice(j,1); //Removing single user						

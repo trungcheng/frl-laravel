@@ -7,6 +7,7 @@ exports.helper = helper;
 var method = routes.prototype;
 
 function routes(app, connection,io, sessionInfo) {
+
 	app.use(bodyParser.urlencoded({
 		extended: true
 	}));
@@ -21,13 +22,15 @@ function routes(app, connection,io, sessionInfo) {
 		var uIdSocket = socket.request.session.uid;
 		//Storing users into array as an object
 	    socket.on('userInfo', function(userinfo) {
+	    	// console.log(userinfo);
 	    	/*
-	    		Adding Single socket user into 'uesrs' array
+	    		Adding Single socket user into 'users' array
 	    	*/
 			var should_add = true;
 	    	if(users.length == 0) {
 	    		userinfo.socketId = socket.id;
 	    		users.push(userinfo);
+	    		// console.log(users);
 	    	} else {
 	    		users.forEach(function(element, index, array) {
 	    			if(element.id == userinfo.id){
@@ -51,9 +54,11 @@ function routes(app, connection,io, sessionInfo) {
 				users.forEach(function(element, index, array) {
 		    		helper.getUserChatList(element.id, connection, function(dbUsers) {
 		    			if(dbUsers === null) {
+		    				console.log('has one person');
 		    				io.to(element.socketId).emit('userEntrance',users);
 		    			} else {
-		    				helper.mergeUsers(users,dbUsers, 'no', function(mergedUsers) {
+		    				console.log('has many person');
+		    				helper.mergeUsers(users, dbUsers, 'no', function(mergedUsers) {
 		    					io.to(element.socketId).emit('userEntrance',mergedUsers);
 		    				});
 		    			}	    			
