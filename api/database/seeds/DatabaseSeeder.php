@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->delete();
 
         $users = array(
-                ['name' => 'trungdn', 'email' => 'trungdn@gmail.com', 'password' => Hash::make('123456')],
-                ['name' => 'anhpt', 'email' => 'anhpt@gmail.com', 'password' => Hash::make('123456')],
-                ['name' => 'philv', 'email' => 'philv@gmail.com', 'password' => Hash::make('123456')],
+                ['name' => 'trungdn', 'email' => 'trungdn@gmail.com', 'password' => Hash::make('123456'), 'p_photo' => 'http://lorempixel.com/400/200', 'online' => 'Y', 'timestamp' => 1495384616],
+                ['name' => 'trungcheng', 'email' => 'trungcheng@gmail.com', 'password' => Hash::make('123456'), 'p_photo' => 'http://lorempixel.com/400/200', 'online' => 'Y', 'timestamp' => 1495389998],
+                ['name' => 'trungji', 'email' => 'trungji@gmail.com', 'password' => Hash::make('123456'), 'p_photo' => 'http://lorempixel.com/400/200', 'online' => 'Y', 'timestamp' => 1495384345],
         );
             
         // Loop through each user above and create the record for them in the database

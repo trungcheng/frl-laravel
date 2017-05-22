@@ -15,7 +15,7 @@
                     <a href="/app/dashboard">Dashboard</a>
                 </li>
                 <li ng-class="{ active: isActive('/app/chat') }">
-                    <a href="/app/chat">Chat</a>
+                    <a href="/app/chat?id={{ rootAuth.id }}">Chat Room</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav pull-right" ng-if="!rootAuth">

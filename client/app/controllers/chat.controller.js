@@ -5,220 +5,265 @@
         .module('Freelance')
         .controller('ChatController', ChatController);
 
-    function ChatController($rootScope, $scope, $http, $state, $cookieStore, $location, ToastFactory, socket) {
+    function ChatController($rootScope, $scope, $location, $window, $timeout, socket, runajax, ToastFactory) {
 
-    	$scope.myRoomID = null;
-    	$scope.typing = false;
-  		$scope.timeout = undefined;
+    	$scope.show_userinfo = ""; //To contain user information.
+	  	$scope.userlist = ""; //To contain list of users.
+	  	$scope.RecentUserList = ""; //To contain list of users.
+	  	$scope.uid = "";
+		$scope.hightlight_id = "";
+	  	$scope.hightlight_socket_id = "";
+	  	$scope.send_to_userinfo = "";
+	  	$scope.send_to_user_name = "";
+	  	$scope.send_text;
+	  	$scope.msgs = [];
 
-  		$scope.timeoutFunction = function() {
-    		$scope.typing = false;
-    		socket.emit("typing", false);
-  		}
+		/* Making Usefull function*/
+		$scope.self = {
+			getUserInfo: function(callback) {
+				var uid = $location.search()['id'];
+				$scope.uid = uid;
+				var data = {
+					url: '/get_userinfo',
+					data_server: {
+						uid: uid
+					}
+				};
+				runajax.runajax_function(data, function(userdata) {        
+					$scope.show_userinfo = userdata;        
+					callback(userdata);
+				});
+			},
 
-    	$scope.zeroPad = function(num, size) {
-		  	var s = num + "";
-		  	while (s.length < size)
-		    	s = "0" + s;
-		  	return s;
-		}
+			getRecentChats: function(callback){
+				var uid = $location.search()['id'];
+				$scope.uid = uid;
+				var data = {
+					url: '/get_recent_chats',
+					data_server: {
+						uid:uid
+					}
+				};
+				runajax.runajax_function(data, function(userdata) {
+					callback(userdata);
+				});
+			},
 
-		// Format the time specified in ms from 1970 into local HH:MM:SS
-		$scope.timeFormat = function(msTime) {
-		  	var d = new Date(msTime);
-		  	
-		  	return $scope.zeroPad(d.getHours(), 2) + ":" +
-		    	$scope.zeroPad(d.getMinutes(), 2) + ":" +
-		    	$scope.zeroPad(d.getSeconds(), 2) + " ";
-		}
+			getUsersToChats: function(callback) {
+			  	var uid = $location.search()['id'];
+			  	$scope.uid = uid;
+			  	var data = {
+					url: '/get_users_to_chats',
+					data_server: {
+					  	uid: uid
+					}
+			  	};
+				runajax.runajax_function(data,function(userdata) {
+					callback(userdata);
+				});
+			},
+			getMsg: function(msgs_userinfo,callback) {
+			  	var data = {
+					url: '/get_msgs',
+					data_server: {
+				  		uid: $scope.uid,
+				  		from_id: msgs_userinfo.id
+					}
+			  	}
+			  	runajax.runajax_function(data,function(userdata){        
+					callback(userdata);
+			  	});
+			},
 
-    	$scope.loadInit = function () {
-    		var name = $rootScope.rootAuth.name;
-		    var device = "desktop";
-		    if (navigator.userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile/i)) {
-		      	device = "mobile";
-		    }
-		    socket.emit("joinserver", name, device);
-		    $("#msg").focus();
-    	}
+			scrollDiv: function() {
+			  	var scrollDiv = angular.element( document.querySelector( '.msg-container' ) );
+			  	$(scrollDiv).animate({scrollTop: scrollDiv[0].scrollHeight}, 900);
+			},
 
-    	$scope.chatForm = function () {
-		    if ($scope.message !== "") {
-		      	socket.emit("send", new Date().getTime(), $scope.message);
-		      	$scope.message = "";
-		    }
-    	}
-
-    	$("#msg").keypress(function(e) {
-		    if (e.which !== 13) {
-		      	if ($scope.typing === false && $scope.myRoomID !== null && $("#msg").is(":focus")) {
-		        	$scope.typing = true;
-		        	socket.emit("typing", true);
-		      	} else {
-		        	clearTimeout($scope.timeout);
-		        	$scope.timeout = setTimeout($scope.timeoutFunction(), 5000);
-		      	}
-		    }
-		});
-
-		socket.on("isTyping", function(data) {
-		    if (data.isTyping) {
-		      	if ($("#"+data.person+"").length === 0) {
-		        	$("#updates").append("<li id='"+ data.person +"'><span class='text-muted'><small><i class='fa fa-keyboard-o'></i> " + data.person + " is typing.</small></li>");
-		        	$scope.timeout = setTimeout($scope.timeoutFunction(), 5000);
-		      	}
-		    } else {
-		      	$("#"+data.person+"").remove();
-		    }
-		});
-
-		$scope.createRoom = function () {
-		    $scope.roomExists = false;
-		    $scope.roomName = $("#createRoomName").val();
-		    socket.emit("check", $scope.roomName, function(data) {
-		      	$scope.roomExists = data.result;
-		       	if ($scope.roomExists) {
-		          	$("#errors").empty();
-		          	$("#errors").show();
-		          	$("#errors").append("Room <i>" + $scope.roomName + "</i> already exists");
-		        } else {      
-		        	if ($scope.roomName.length > 0) { //also check for roomname
-		          		socket.emit("createRoom", $scope.roomName);
-		          		$("#errors").empty();
-		          		$("#errors").hide();
-		          	}
-		        }
-		    });
+			sendTypingNotification: function(eventName) {
+			  	var TypeTimer;                
+			  	var TypingInterval = 2000;
+			  	var data_server = {
+				  	data_uid: $scope.uid,
+				  	data_fromid: $scope.hightlight_id,
+				  	data_socket_fromid: $scope.hightlight_socket_id
+				}; 
+			  	if (eventName == "keypress") {
+					$timeout.cancel(TypeTimer);
+					data_server.event_name = 'keypress';
+					socket.emit('setTypingNotification', data_server);
+			  	} else {
+					TypeTimer = $timeout(function() {
+				  		data_server.event_name = 'keydown';
+				  		socket.emit('setTypingNotification', data_server);
+					}, TypingInterval);
+			  	}
+			}
 		};
 
-		$("#rooms").on('click', '.joinRoomBtn', function() {
-		    var roomName = $(this).siblings("span").text();
-		    var roomID = $(this).attr("id");
-		    socket.emit("joinRoom", roomID);
+		/*
+			Function To get 'user information as well as invokes to get Chat list' 
+		*/
+		$scope.self.getUserInfo(function(userinfo) {
+			socket.emit('userInfo',userinfo.data); // sending user info to the server  
 		});
 
-		$("#rooms").on('click', '.removeRoomBtn', function() {
-		    var roomName = $(this).siblings("span").text();
-		    var roomID = $(this).attr("id");
-		    socket.emit("removeRoom", roomID);
-		    $("#createRoom").show();
-		});
+		/*
+			Function To show selected user from chat list  
+		*/  
+		$scope.hightlight_user = function(send_to_userinfo) {
 
-		$("#leave").click(function() {
-		    var roomID = $scope.myRoomID;
-		    socket.emit("leaveRoom", roomID);
-		    $("#createRoom").show();
-		});
+			$scope.send_to_userinfo = send_to_userinfo;
+			$scope.hightlight_id = send_to_userinfo.id;
+			$scope.send_to_user_name = send_to_userinfo.name; 
+			$scope.hightlight_socket_id = send_to_userinfo.socketId; 
+			
+			$scope.self.getMsg(send_to_userinfo, function(result) {
+			  	$scope.msgs = "";
+			  	if(result != 'null'){
+					$scope.msgs = result;
+			  	}
+			});
+		};
 
-		$("#people").on('click', '.whisper', function() {
-		    var name = $(this).siblings("span").text();
-		    $("#msg").val("w:"+name+":");
-		    $("#msg").focus();
-		}); 
+		/*
+			Function To get 'chat list' 
+		*/
+		$scope.get_recent_chats = function() {
+			$scope.self.getRecentChats(function(offlineUsers) {
+				$scope.RecentUserList = offlineUsers;
+			});
+		};
 
-		socket.on("exists", function(data) {
-		  	$("#errors").empty();
-		  	$("#errors").show();
-		  	$("#errors").append(data.msg + " Try <strong>" + data.proposedName + "</strong>");
-		});
+		/*
+			Function To get 'start new chat list' 
+		*/
+		$scope.get_users_to_chats = function(){
+			$scope.self.getUsersToChats(function(newUsers) {
+			  $scope.RecentUserList = newUsers;
+			});
+		};
 
-		socket.on("joined", function() {
-		  	$("#errors").hide();
-		  	if (navigator.geolocation) { //get lat lon of user
-		    	navigator.geolocation.getCurrentPosition(positionSuccess, positionError, { enableHighAccuracy: true });
-		  	} else {
-		    	$("#errors").show();
-		    	$("#errors").append("Your browser is ancient and it doesn't support GeoLocation.");
-		  	}
-		  	function positionError(e) {
-		    	console.log(e);
-		  	}
+		/*
+			Function To send messages
+		*/  
+		$scope.send_msg = function(fromModal, socketId, toid) {
+			if(fromModal == ""){
+				if($scope.send_to_userinfo != "") {
+					if($scope.send_text == ""){
+						alert("Message can't be empty.");
+					} else {
+						var data = {
+							socket_id: $scope.send_to_userinfo.socketId,
+							to_id: $scope.send_to_userinfo.id,
+							from_id: $scope.uid,
+							msg: $scope.send_text
+						};
+						// sending user info to the server starts
+						socket.emit('sendMsg', data);
 
-		  	function positionSuccess(position) {
-		    	var lat = position.coords.latitude;
-		    	var lon = position.coords.longitude;
-		    	//consult the yahoo service
-		    	$.ajax({
-		      		type: "GET",
-		      		url: "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20geo.placefinder%20where%20text%3D%22"+lat+"%2C"+lon+"%22%20and%20gflags%3D%22R%22&format=json",
-		      		dataType: "json",
-		       		success: function(data) {
-		        		// socket.emit("countryUpdate", {country: data.query.results.Result.countrycode});
-		      		}
-		    	});
-		  	}
-		});
+						$scope.msgs.push({
+							msg: $scope.send_text,
+							from_id: $scope.uid,
+							to_id: $scope.send_to_userinfo.id,
+							timestamp: Math.floor(new Date() / 1000)
+						});
+						$scope.send_text = "";
+						$scope.self.scrollDiv();
+					}           
+				} else {
+				  alert("Select a user to send Message.");
+				}  
+			} else {
+				var getMsgText = angular.element(document.querySelector('#msg_modal'+'_'+toid )).val();
+				if(getMsgText == "") {
+					alert("Message can't be empty.");
+				} else {
+					var data = {
+						socket_id: null,
+						to_id: toid,
+						from_id :$scope.uid,
+						msg: getMsgText
+					};
+					socket.emit('sendMsg',data);
+				}
+			}
+		};
 
-		socket.on("history", function(data) {
-		  	if (data.length !== 0) {
-		    	$("#msgs").append("<li><strong><span class='text-warning'>Last 10 messages:</li>");
-		    	$.each(data, function(data, msg) {
-		      		$("#msgs").append("<li><span class='text-warning'>" + msg + "</span></li>");
-		    	});
-		  	} else {
-		    	$("#msgs").append("<li><strong><span class='text-warning'>No past messages in this room.</li>");
-		  	}
-		});
 
-		socket.on("update", function(msg) {
-		    $("#msgs").append("<li>" + msg + "</li>");
-		});
+		/*
+			To hide and show the Message box inside Modal
+		*/
+		$scope.hideShowMsgBox = function(id, action, $event) {
 
-		socket.on("update-people", function(data){
-		    //var peopleOnline = [];
-		    var html = "";
-		    $("#people").empty();
-		    $('#people').append("<li class=\"list-group-item active\">People online <span class=\"badge\">"+data.count+"</span></li>");
-		    $.each(data.people, function(a, obj) {
-		      	if (!("country" in obj)) {
-		        	html = "";
-		      	} else {
-		        	html = "<img class=\"flag flag-"+obj.country+"\"/>";
-		      	}
-		    $('#people').append("<li class=\"list-group-item\"><span>" + obj.name + "</span> <i class=\"fa fa-"+obj.device+"\"></i> " + html + " <a href=\"#\" class=\"whisper btn btn-xs\">whisper</a></li>");
-		      	//peopleOnline.push(obj.name);
-		    });
-		});
+			var hideShowEle = angular.element( document.querySelector( '.collapseMsgBox'+'_'+id ) ); 
+			var hidEle = angular.element( document.querySelector( '.hideMSgBox'+'_'+id ) );
+			var showEle = angular.element( document.querySelector( '.showMSgBox'+'_'+id ) );
 
-		socket.on("chat", function(msTime, person, msg) {
-		    $("#msgs").append("<li><strong><span class='text-success'>" + $scope.timeFormat(msTime) + person.name + "</span></strong>: " + msg + "</li>");
-		    //clear typing field
-		    $("#"+person.name+"").remove();
-		    clearTimeout($scope.timeout);
-		    $scope.timeout = setTimeout($scope.timeoutFunction(), 0);
-		});
+			if(action == "hide") {
+				hideShowEle.addClass('send-msg-hidden');
+				hideShowEle.removeClass('send-msg-show');
+				showEle.removeClass('send-msg-hidden');
+				showEle.addClass('send-msg-show');
+				hidEle.addClass('send-msg-hidden');
+				hidEle.removeClass('send-msg-show');
+			} else {
+				hideShowEle.addClass('send-msg-show');
+				hideShowEle.removeClass('send-msg-hidden');
+				showEle.addClass('send-msg-hidden');
+				showEle.removeClass('send-msg-show');
+				hidEle.removeClass('send-msg-hidden');
+				hidEle.addClass('send-msg-show');
+			}
+		}
 
-		socket.on("whisper", function(msTime, person, msg) {
-		    if (person.name === "You") {
-		      	s = "whisper"
-		    } else {
-		      	s = "whispers"
-		    }
-		    $("#msgs").append("<li><strong><span class='text-muted'>" + $scope.timeFormat(msTime) + person.name + "</span></strong> "+s+": " + msg + "</li>");
-		});
+		
+		/*---------------------------------------------------------------------------------
+			Socket on event starts
+	  	---------------------------------------------------------------------------------*/
 
-		socket.on("roomList", function(data) {
-		    $("#rooms").text("");
-		    $("#rooms").append("<li class=\"list-group-item active\">List of rooms <span class=\"badge\">"+data.count+"</span></li>");
-	     	if (!jQuery.isEmptyObject(data.rooms)) { 
-	      		$.each(data.rooms, function(id, room) {
-	        		var html = "<button id="+id+" class='joinRoomBtn btn btn-default btn-xs' >Join</button>" + " " + "<button id="+id+" class='removeRoomBtn btn btn-default btn-xs'>Remove</button>";
-	        		$('#rooms').append("<li id="+id+" class=\"list-group-item\"><span>" + room.name + "</span> " + html + "</li>");
-	      		});
-	    	} else {
-	      		$("#rooms").append("<li class=\"list-group-item\">There are no rooms yet.</li>");
-	    	}
-		});
 
-		socket.on("sendRoomID", function(data) {
-		    $scope.myRoomID = data.id;
-		});
+	  	/*
+			Function to show messages.
+	  	*/
+		socket.on('getMsg',function(data) {
+			if($scope.send_to_userinfo != "") {
+		  		$scope.self.getMsg($scope.send_to_userinfo, function(result) {
+					$scope.msgs = "";
+					$scope.msgs = result;
+					$scope.self.scrollDiv();
+		  		});    
+			}
 
-		socket.on("disconnect", function() {
-		    $("#msgs").append("<li><strong><span class='text-warning'>The server is not available</span></strong></li>");
-		    $("#msg").attr("disabled", "disabled");
-		    $("#send").attr("disabled", "disabled");
-		});
+			/*
+		  		Using Toaster to show notifications
+			*/
+			// toaster.pop('success',data.name+" sent you a message", data.msg,5000);
+			ToastFactory.popSuccess(data.msg, data.name + " sent you a message");
+	  	});
+
+		/*
+			Function to update user list when one user goes offline.
+		*/
+	  	socket.on('getTypingNotification', function(data) {
+			if(data.event_name == "keypress") {
+		  		angular.element('#isTyping_' + data.data_uid).css('display','block');
+			} else {
+		  		angular.element('#isTyping_' + data.data_uid).css('display','none');      
+			}
+	  	});
+
+	  	socket.on('exit', function(data) {
+	  		$scope.self.getUserInfo(function(userinfo) {
+				socket.emit('userInfo',userinfo.data); // sending user info to the server  
+			});
+	  	});
+	  	/*
+			Function to show Chat List.
+	  	*/
+		socket.on('userEntrance', function(data) {
+			$scope.userlist = data;
+	  	});
 
     }
 

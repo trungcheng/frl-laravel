@@ -17,7 +17,7 @@
 		if($location.search().stt) {
 			var query = $location.search().stt;
 			var msg = query.replace(/-/g, " ");
-			ToastFactory.popSuccess(msg);
+			ToastFactory.popSuccess(msg, 'ACTION SUCCESS');
 		}
 
 		$scope.login = function() {
@@ -28,14 +28,14 @@
 							$cookieStore.put('member',res.member);
 							$cookieStore.put('token',res.token);
 							// $cookieStore.put('time_out',response.data.token);
-							ToastFactory.popSuccess(response.message);
+							ToastFactory.popSuccess(response.message, 'ACTION SUCCESS');
 							$state.go('app.dashboard');	
 						} else {
-							ToastFactory.popErrors(response.message);
+							ToastFactory.popErrors(response.message, 'ACTION FAILED');
 						}
 					});
 				} else {
-					ToastFactory.popErrors(response.message);
+					ToastFactory.popErrors(response.message, 'ACTION FALIED');
 				}
 			})
 		}

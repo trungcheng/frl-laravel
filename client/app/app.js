@@ -8,12 +8,6 @@ var Freelance = angular.module('Freelance', [
     "ngCookies"
 ]);
 
-// Connect with socket.io NodeJs
-Freelance.factory('socket',function () {
-    var socket = io.connect('http://127.0.0.1:1337');
-    return socket;
-});
-
 /* Init global settings add timeout when user logged */
 Freelance.run(function($rootScope, $state,$interval,config, $location, $http, $cookieStore) {
     if(config.enableClientAuthExpire) {

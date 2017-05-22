@@ -10,9 +10,9 @@
     	$scope.Credential = {};
 
 		$scope.Credential = {
-			name:null,
+			name: null,
 			email: null,
-			password:null,
+			password: null,
 		}
 	    // $scope.isLoading = false;
 	    $scope.userData = {token:''};
@@ -30,16 +30,16 @@
 		$scope.register = function() {
 			$scope.submited = true;
 			RegisterService.postRegister($scope.Credential).success(function(response) {
-				if(response.status){
-					ToastFactory.popSuccess(response.message);
+				if(response.status) {
+					ToastFactory.popSuccess(response.message, 'ACTION SUCCESS');
 					$state.go('access.login');
 				} else {
 					$scope.Credential = {
-						name:null,
+						name: null,
 						email: null,
-						password:null
+						password: null
 					}
-					ToastFactory.popErrors(response.message);
+					ToastFactory.popErrors(response.message, 'ACTION FAILED');
 				}
 			});
 		},

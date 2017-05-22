@@ -13,7 +13,6 @@
 	<link rel="shortcut icon" href="/client/favicon.ico" />
 	<link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="/components/font-awesome/css/font-awesome.min.css" />
-	<link rel="stylesheet" href="/assets/css/flags.css" />
 	<link rel="stylesheet" href="/assets/css/app.css" />
 	<link rel="stylesheet" href="/assets/css/toaster.css" />
 	<link rel="stylesheet" href="/assets/css/chat.css" />
@@ -62,28 +61,23 @@
     <!-- BEGIN CONTROLLERS -->
     <script src="/client/app/controllers/auth/login.controller.js"></script>
     <script src="/client/app/controllers/auth/register.controller.js"></script>
+    <script src="/client/app/controllers/dashboard.controller.js"></script>
     <script src="/client/app/controllers/chat.controller.js"></script>
     <!-- END CONTROLLERS -->
 
     <!-- BEGIN FACTORIES JS -->
 	<script src="/client/app/factories/toast.factory.js"></script>
+	<script src="/client/app/factories/socket.factory.js"></script>
     <!-- END FACTORIES JS -->
 
 	<!-- BEGIN SERVICE JS -->
 	<script src="/client/app/services/auth/login.service.js"></script>
 	<script src="/client/app/services/auth/register.service.js"></script>
+	<script src="/client/app/services/app.service.js"></script>
     <!-- END SERVICE JS -->
 
-    <!-- BEGIN DIRECTIVES JS -->
-
-    <!-- END DIRECTIVES JS -->
-
-    <!-- BEGIN FILTER JS -->
-
-    <!-- END FILTER JS -->
-
 	<!--NodeJs Socket.io Client-->
-    <script src="/node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script src="/node_modules/socket.io-client/dist/socket.io.js"></script>
     <!--End NodeJs Socket.io Client-->
 
 </body>
