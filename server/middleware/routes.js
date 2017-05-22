@@ -25,7 +25,7 @@ function routes(app, connection,io, sessionInfo) {
 	    		Adding Single socket user into 'uesrs' array
 	    	*/
 			var should_add = true;
-	    	if(users.length == 0){
+	    	if(users.length == 0) {
 	    		userinfo.socketId = socket.id;
 	    		users.push(userinfo);
 	    	} else {
@@ -117,13 +117,13 @@ function routes(app, connection,io, sessionInfo) {
 	    socket.on('disconnect', function() {
 	    	var spliceId = "";
 	    	for(var i=0; i < users.length; i++) {
-				if(users[i].id == uIdSocket){
+				if(users[i].id == uIdSocket) {
 					if(users[i].socketId == socket.id) {					
 					  	var data = {
 							query: "update users set online='N' where id='"+users[i].id+"'",
 							connection: connection
 						}
-						spliceId=i;
+						spliceId = i;
 						helper.queryRunner(data, function(result) {
 							users.splice(spliceId,1); //Removing single user
 							io.emit('exit',users[spliceId]);

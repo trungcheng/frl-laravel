@@ -41,7 +41,7 @@
 				var data = {
 					url: '/get_recent_chats',
 					data_server: {
-						uid:uid
+						uid: uid
 					}
 				};
 				runajax.runajax_function(data, function(userdata) {

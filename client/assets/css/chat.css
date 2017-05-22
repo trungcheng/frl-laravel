@@ -139,7 +139,10 @@ div.p_photo-group {
     margin: 0px auto;
     width: 50%;
   }
-
+  .col-sm-12 {
+    width: 100%;
+    margin-top: 90px !important;
+  }
 }
 /*--------------------------------------------------------------------------------
 Login page ends
@@ -245,7 +248,7 @@ List of users starts
     margin-right: 30px;
     width: 15px;
     border-radius: 50%;
-    margin-top: 6.5%;
+    margin-top: 8.5%;
 }
 .userlist-userName{
   display: inline-block;

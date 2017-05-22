@@ -1,15 +1,12 @@
 <div class="body">
     <div class="rows">
-        <div class="col-md-8 msg-wrapper">
+        <div class="col-md-8 col-xs-12 msg-wrapper">
             <div class="msg-wrapper-header">
                 <div class="chat-user-meta">
                     <span class="user-name">{{ send_to_user_name == '' ? 'Select User to Chat': send_to_user_name}} </span>
                 </div>
             </div>
             <div class="msg-wrapper-body">
-                <!-- 
-                    Displaying messages to user when users Starts
-                -->
                 <div class="msg-container" id="msg-container">
                     <div class="msg-single" ng-repeat="msg_data in msgs"  
                         ng-style="{
@@ -26,22 +23,16 @@
                     <textarea class="form-control send-msg-text" ng-model='send_text' send-typing-notification placeholder="Type your message here" ></textarea>
                     <h1 class="send-btn" ng-click="send_msg('','','')"><span class="glyphicon glyphicon-send"></span></h1>
                 </div>
-                <!-- 
-                    Message box to send messages Ends
-                -->             
             </div>
         </div>
         
-        <div class="col-md-4  list-wrapper">
-            <!-- 
-                Display Chat list for user starts
-            --> 
+        <div class="col-md-4 col-xs-12 col-sm-12 list-wrapper">
             <div class="col-md-12 list-wrapper-header">
                 <!-- 
                     Displaying profile Image
                 --> 
                 <div class="profile_pic">
-                    <img class="img-circle" ng-src="{{show_userinfo.data.p_photo}}">
+                    <img class="img-circle" ng-src="/client{{show_userinfo.data.p_photo}}">
                 </div>
                 <!-- 
                     Link for modal and for Logout starts
